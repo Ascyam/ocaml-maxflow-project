@@ -1,6 +1,5 @@
 open Graph
 open Printf
-    
 type path = string
 
 (* Format of text files:
@@ -48,6 +47,24 @@ let write_file path graph =
   let _ = e_fold graph (fun count arc -> fprintf ff "e %d %d %d %s\n" arc.src arc.tgt count arc.lbl ; count + 1) 0 in
   
   fprintf ff "\n%% End of graph\n" ;
+  
+  close_out ff ;
+  ()
+
+
+
+let export path graph =
+
+  let ff = open_out path in
+
+  fprintf ff "digraph finite_state_machine {\n" ;
+  fprintf ff "rankdir=LR;\n" ;
+  fprintf ff "size=\"8,5\"\n" ;
+  fprintf ff "node [shape = circle]; " ;
+  n_iter_sorted graph (fun id -> fprintf ff "%d " id) ;
+  fprintf ff ";\n" ;
+  e_iter graph (fun arc -> fprintf ff "%d -> %d [ label = \"%s\" ];\n" arc.src arc.tgt arc.lbl) ;
+  fprintf ff "}\n" ;
   
   close_out ff ;
   ()
