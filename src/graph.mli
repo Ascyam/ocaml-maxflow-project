@@ -15,7 +15,7 @@ type 'a arc =
     tgt: id ;
 
     (* Label *)
-    lbl: 'a }
+    lbl: 'a;}
 
 exception Graph_error of string
 

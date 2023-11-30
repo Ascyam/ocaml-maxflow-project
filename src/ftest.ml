@@ -1,5 +1,6 @@
 open Gfile
 open Tools
+open Fordfulkerson
     
 let () =
 
@@ -31,6 +32,7 @@ let () =
   let graph = gmap graph (fun x -> int_of_string x) in
   let graph = add_arc graph 0 3 2 in
   let graph = gmap graph (fun x -> string_of_int x) in
+  let graph = init_flow graph in
   (* Rewrite the graph that has been read. *)
   let () = export outfile graph in
 
