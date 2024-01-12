@@ -17,6 +17,10 @@ type 'a arc =
     (* Label *)
     lbl: 'a;}
 
+(* Exception raised when a node is not found. *)
+
+(* Exception raised when an error occurs. *)
+
 exception Graph_error of string
 
 

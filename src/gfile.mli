@@ -18,3 +18,5 @@ val write_file: path -> string graph -> unit
 *)
 
 val export: path -> string graph -> unit
+
+val export2: path -> string graph -> unit

@@ -10,6 +10,6 @@ node [shape = circle]; 0 1 2 3 4 5 ;
 3 -> 4 [ label = "5" ];
 2 -> 4 [ label = "12" ];
 0 -> 1 [ label = "7" ];
+0 -> 3 [ label = "10" ];
 0 -> 2 [ label = "8" ];
-0 -> 3 [ label = "12" ];
 }

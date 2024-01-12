@@ -1,12 +1,17 @@
 type id = int
 
+(* An arc is a pair of a source node and a target node, together with a label. *)
+
 type 'a arc =
   { src: id ;
     tgt: id ;
-    lbl: 'a }
+    lbl: 'a ;}
 
 (* A graph is just a list of pairs: a node & its outgoing arcs. *)
+
 type 'a graph = (id * 'a arc list) list
+
+(* Exception raised when a node is not found. *)
 
 exception Graph_error of string
 
