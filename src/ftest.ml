@@ -29,14 +29,15 @@ let () =
   (* Open file *)
   let graph = from_file infile in
   let intgraph = gmap graph (fun x -> int_of_string x) in
-  (*let graph = add_arc graph 0 3 2 in
-  let graph = init_flow graph in*)
-  (*let graph = graphinter graph in*)
+  (*let graph = add_arc graph 0 3 2 in*)
+
+  let flowgraph = init_graphf intgraph in
+
   let graph = gmap intgraph (fun x -> string_of_int x) in
   
   let () = export outfile graph in
 
-  let chemin = find_path intgraph 0 5 in
+  let chemin = find_path flowgraph _source _sink in
   let () = print_path chemin in 
 
   ()

@@ -1,20 +1,19 @@
 open Graph
 
-type capacite = int
-type flow = int 
+type flow =
+  {
+    acu: int;
+    capa: int
+  }
 
-type fcarc = (flow * capacite)
+val init_graphf : int graph -> flow graph 
 
-type path = (id * id * fcarc) list
+(*val diff_graph : (flow*flow) graph -> flow graph*)
 
-type graphf = fcarc graph
+(*val path_flow : path option -> flow
 
-val init_flow : 'a graph -> fcarc graph 
+val path_capacite : path option -> capa*)
 
-val diff_graph : fcarc graph -> fcarc graph
+val find_path : flow graph -> id -> id -> flow arc list
 
-(*val graphinter : int graph -> int graph*) 
-
-val find_path : flow graph -> id -> id -> path
-
-val print_path : path -> unit
+val print_path : flow arc list -> unit

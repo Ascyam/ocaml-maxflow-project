@@ -1,54 +1,44 @@
 open Graph
 open Tools
 
+type flow =
+  {
+    acu: int;
+    capa: int
+  }
 
-type capacite = int
-type flow = int 
+let init_graphf gr = gmap gr (fun label -> {acu = 0; capa = label})
 
-type fcarc = (flow * capacite)
-
-type path = (id * id * fcarc) list
-
-type graphf = fcarc graph
-
-let list_arcs arcs = 
-  let rec aux = function
-    |[] -> []
-    |x::t -> (x.tgt, (0, x.lbl))::(aux t)
-  in aux arcs
 
 let find_path graphf src dst = 
   let rec parcourir graphf src dst marked stock= 
     if src = dst then stock 
     else
       let arcs = out_arcs graphf src in
-      let listf = list_arcs arcs in
       let rec aux2 arcliste =
         match arcliste with
         |[] -> []
-        |(id, (flow, capacite))::t -> 
-          if (not (List.mem id marked)) && (flow < capacite) then
-            let new_path = (src, id, (flow, capacite))::stock in
-            let marked = id::marked in
-            let path = (List.rev (parcourir graphf id dst marked new_path)) in
+        |x::t -> 
+          if (not (List.mem x.tgt marked)) && (x.lbl.acu < x.lbl.capa) then
+            let new_path = {src= x.src; tgt = x.tgt; lbl={acu=x.lbl.acu; capa=x.lbl.capa}}::stock in
+            let marked = (x.tgt)::marked in
+            let path = (List.rev (parcourir graphf x.tgt dst marked new_path)) in
             if path = [] then aux2 t
             else path
           else aux2 t
-      in aux2 listf
+      in aux2 arcs
   in parcourir graphf src dst [src] []
 ;;
 
 let print_path path = 
   let rec aux = function
     |[] -> ()
-    |(src, dst, (flow, capacite))::t -> 
-      Printf.printf "%d -> %d (%d/%d)\n" src dst flow capacite;
+    |x::t -> 
+      Printf.printf "%d -> %d (%d/%d)\n" x.src x.tgt x.lbl.acu x.lbl.capa;
       aux t
   in aux path  
 
-let init_flow gr = gmap gr (fun x -> (0,x)) 
-
-let diff_graph gr = gmap gr (fun (flow, capacite)-> capacite-flow)
+(*let diff_graph gr = gmap gr (fun (flow, capacite)-> capacite-flow)
 
 
 let rec min_capa graph src acu = function
@@ -64,11 +54,11 @@ let rec update_capa graph path f =
   |[] -> graph
   |(src, dst, (flow, capacite))::t -> update_capa (add_arc graph src dst (capacite-f)) t flow
 
-let rec path_flow = function
-  |[] -> failwith "path_flow"
-  |(_, _, (flow, _))::_ -> flow 
+let path_flow = function
+  |Some path -> List.fold_left (fun acc (_, _, (flow, _)) -> acc + flow) 0 path
+  |None -> 0
 
-let rec path_capacite = function 
-  |[] -> failwith "path_capacite"
-  |(_, _, (_, capacite))::_ -> capacite
+let path_capacite = function 
+  |Some path -> List.fold_left (fun acc (_, _, (_, capacite)) -> acc + capacite) 0 path
+  |None -> 0*)
   
