@@ -1,19 +1,18 @@
 open Graph
-
-type flow =
-  {
-    acu: int;
-    capa: int
-  }
+open Tools
 
 val init_graphf : int graph -> flow graph 
 
-(*val diff_graph : (flow*flow) graph -> flow graph*)
-
-(*val path_flow : path option -> flow
-
-val path_capacite : path option -> capa*)
+val diff_graph : flow graph -> flow graph
 
 val find_path : flow graph -> id -> id -> flow arc list
 
 val print_path : flow arc list -> unit
+
+val update_flow : flow graph -> flow arc list -> int -> flow graph
+
+val flow_min : flow arc list -> int
+
+val ford_fulkerson : int graph -> id -> id -> flow graph
+
+val string_of_flow : flow -> string

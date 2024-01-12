@@ -1,12 +1,6 @@
 open Graph
 open Tools
 
-type flow =
-  {
-    acu: int;
-    capa: int
-  }
-
 let init_graphf gr = gmap gr (fun label -> {acu = 0; capa = label})
 
 
@@ -38,27 +32,33 @@ let print_path path =
       aux t
   in aux path  
 
-(*let diff_graph gr = gmap gr (fun (flow, capacite)-> capacite-flow)
+let diff_graph gr = gmap gr (fun label -> {acu = label.capa - label.acu; capa = label.capa})
 
+let string_of_flow flow = "" ^ string_of_int flow.acu ^ "/" ^ string_of_int flow.capa ^ ""
 
-let rec min_capa graph src acu = function
-  | [] -> acu
-  | id :: rest -> 
-    let arc = find_arc graph src id in
-    match arc with 
-    | None -> 0 
-    | Some arc -> min_capa graph id (min acu arc.lbl) rest  
-
-let rec update_capa graph path f = 
+let rec update_flow graphf path acuflow = 
   match path with
-  |[] -> graph
-  |(src, dst, (flow, capacite))::t -> update_capa (add_arc graph src dst (capacite-f)) t flow
+  |[] -> graphf
+  |x::t -> 
+    let new_graphf = add_arc graphf x.src x.tgt {acu= acuflow; capa=x.lbl.capa} in
+    update_flow new_graphf t acuflow
 
-let path_flow = function
-  |Some path -> List.fold_left (fun acc (_, _, (flow, _)) -> acc + flow) 0 path
-  |None -> 0
 
-let path_capacite = function 
-  |Some path -> List.fold_left (fun acc (_, _, (_, capacite)) -> acc + capacite) 0 path
-  |None -> 0*)
+let rec flow_min path = 
+  match path with
+  |[] -> max_int
+  |x::t -> 
+    if x.lbl.capa - x.lbl.acu < flow_min t then x.lbl.capa - x.lbl.acu
+    else flow_min t
   
+
+  let ford_fulkerson graph src dst = 
+    let graphf = init_graphf graph in
+    let rec aux graphf src dst = 
+      let path = find_path graphf src dst in
+      if path = [] then graphf
+      else
+        let flow = flow_min path in
+        let new_graphf = update_flow graphf path flow in
+        aux new_graphf src dst
+    in aux graphf src dst
