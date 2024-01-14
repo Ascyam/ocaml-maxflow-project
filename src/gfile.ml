@@ -69,23 +69,6 @@ let export path graph =
   close_out ff ;
   ()
 
-let export2 path graph =
-
-  let ff = open_out path in
-
-  fprintf ff "digraph finite_state_machine {\n" ;
-  fprintf ff "rankdir=LR;\n" ;
-  fprintf ff "size=\"8,5\"\n" ;
-  fprintf ff "node [shape = circle]; " ;
-  n_iter_sorted graph (fun id -> fprintf ff "%d " id) ;
-  fprintf ff ";\n" ;
-  (*e_iter graph (fun fcarc-> fprintf ff "%d -> %d  [label=\"(%d/%d)\"];\n" fcarc.src fcarc.tgt flow capacite) ;*)
-  fprintf ff "}\n" ;
-  
-  close_out ff ;
-  ()
-
-
 (* Reads a line with a node. *)
 let read_node graph line =
   try Scanf.sscanf line "n %f %f %d" (fun _ _ id -> new_node graph id)

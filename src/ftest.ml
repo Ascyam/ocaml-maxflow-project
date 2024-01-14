@@ -1,6 +1,7 @@
 open Gfile
 open Tools
 open Fordfulkerson
+open Moneysharing
     
 let () =
 
@@ -26,21 +27,14 @@ let () =
   and _sink = int_of_string Sys.argv.(3)
   in
 
-  (* Open file *)
-  let graph = from_file infile in
-  let intgraph = gmap graph (fun x -> int_of_string x) in
-  (*let graph = add_arc graph 0 3 2 in*)
 
-  let flowgraph = ford_fulkerson intgraph _source _sink in
+  let personnes = from_file_personnes infile in
+  let depenses = from_file_depenses infile in
+  let graph_f = flow_remboursement personnes depenses in
+  let graph_f = ford_fulkerson_f graph_f _source _sink in
+  let graph_f = gmap graph_f (fun x -> string_of_flow_f x) in
 
-  let graph = gmap flowgraph (fun x -> string_of_flow x) in
-
-  (* Write result *) 
-  
-  let () = export outfile graph in
-
-  (*let chemin = find_path flowgraph _source _sink in
-  let () = print_path chemin in*) 
+  let () = export outfile graph_f in
 
   ()
 

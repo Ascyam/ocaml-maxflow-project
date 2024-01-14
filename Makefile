@@ -1,8 +1,8 @@
 .PHONY: all build format edit demo clean
 
 src?=0
-dst?=5
-graph?=graph6.txt
+dst?=99
+graph?=moneysharing1.txt
 
 all: build
 
@@ -19,7 +19,7 @@ edit:
 
 demo: build
 	@echo "\n   ⚡  EXECUTING  ⚡\n"
-	./ftest.exe graphs/${graph} $(src) $(dst) outfile.txt
+	./ftest.exe money/${graph} $(src) $(dst) outfile.txt
 	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
 	@cat outfile.txt
 

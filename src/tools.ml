@@ -13,3 +13,14 @@ let gmap gr f = e_fold gr (fun x y ->new_arc x {src=y.src;tgt=y.tgt;lbl=(f y.lbl
 let add_arc gr s d l= match find_arc gr s d with
   |None -> new_arc gr {src= s; tgt = d; lbl= l}
   |Some x-> new_arc gr {src= s; tgt = d; lbl= {acu = (x.lbl.acu + l.acu); capa = x.lbl.capa}}
+
+
+type flow_f =
+  {
+    acuf: float;
+    capaf: float;
+  }
+
+let add_arc_f gr s d l= match find_arc gr s d with
+  |None -> new_arc gr {src= s; tgt = d; lbl= l}
+  |Some x-> new_arc gr {src= s; tgt = d; lbl= {acuf = (x.lbl.acuf +. l.acuf); capaf = x.lbl.capaf}}
