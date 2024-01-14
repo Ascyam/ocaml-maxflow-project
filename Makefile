@@ -22,6 +22,8 @@ demo: build
 	./ftest.exe money/${graph} $(src) $(dst) outfile.txt
 	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
 	@cat outfile.txt
+	@dot -Tpng outfile.txt -o output.png
+	@display output.png
 
 clean:
 	find -L . -name "*~" -delete
