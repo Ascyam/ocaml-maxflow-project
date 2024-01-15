@@ -223,6 +223,8 @@ let export_money path graph personnes=
   fprintf ff "rankdir=LR;\n" ;
   fprintf ff "size=\"8,5\"\n" ;
   fprintf ff "node [shape = circle]; " ;
+  fprintf ff "Dettes [shape = doublecircle, style=filled, fillcolor=red]\n";
+  fprintf ff "Surplus [shape = doublecircle, style=filled, fillcolor=green]\n";
   n_iter_sorted graph (fun id -> if id=0 || id=99 then (if id=0 then fprintf ff "Dettes " else fprintf ff "Surplus ") else fprintf ff "%s " (conversion id personnes)) ;
   fprintf ff ";\n" ;
   e_iter graph (fun arc -> if arc.src=0 || arc.tgt=99 then (if arc.src=0 then fprintf ff "Dettes -> %s [ label = \"%s\" ];\n" (conversion arc.tgt personnes) arc.lbl else fprintf ff "%s -> Surplus [ label = \"%s\" ];\n" (conversion arc.src personnes) arc.lbl) else fprintf ff "%s -> %s [ label = \"%s\" ];\n" (conversion arc.src personnes) (conversion arc.tgt personnes) arc.lbl) ;

@@ -95,7 +95,9 @@ let find_path_f graphf src dst =
   in parcourir graphf src dst [src] []
 ;;
 
-let string_of_flow_f flow_f = "" ^ string_of_float flow_f.acuf ^ "/" ^ string_of_float flow_f.capaf ^ ""
+let convert_inf x = if x=Float.infinity then "∞" else string_of_float x
+
+let string_of_flow_f flow_f = "" ^ string_of_float flow_f.acuf ^ "/" ^ convert_inf flow_f.capaf ^ ""
 
 let rec update_flow_f graphf path acuflow = 
   match path with
