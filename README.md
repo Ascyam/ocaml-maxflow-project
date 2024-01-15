@@ -2,9 +2,9 @@
 As a part of our computer science course, we created in Ocaml a Ford-Fulkerson algo in order to use it in a moneysharing application. This consists of balancing expenses made within a group.
 
 ## Project Stages
- - Minimal acceptable project (doing Ford-fulkerson): finished
- - Medium project (have the expenditure balance graph): finished
- - Better project (enhance the medium project + implementing the max-flow min-cost algorithm.): not started
+ - Minimal acceptable project (doing Ford-fulkerson): ```finished```
+ - Medium project (have the expenditure balance graph): ```finished```
+ - Better project (enhance the medium project + implementing the max-flow min-cost algorithm.): ```not started```
 
 ## How to test
 1/ To use, you should install the *OCaml* extension in VSCode. Other extensions might work as well but make sure there is only one installed.
