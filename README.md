@@ -1,7 +1,7 @@
 # Ocaml project
 As a part of our computer science course, we created in Ocaml a Ford-Fulkerson algo in order to use it in a moneysharing application. This consists of balancing expenses made within a group.
 
-# Project Stages
+## Project Stages
 
 
 To use, you should install the *OCaml* extension in VSCode. Other extensions might work as well but make sure there is only one installed.
