@@ -1,4 +1,5 @@
 open Graph
+open Gfile
 
 type personne = {
   id : int;
@@ -18,13 +19,13 @@ type dette = {
   montant : float;
 }
 
-val moyenne_depense : depense -> float
+val moyenne_depense : depense -> 'a list -> float
 
-val moyenne_depenses: depense list -> personne -> float
+val moyenne_depenses: depense list -> personne -> 'a list -> float
 
 val ajout_paiement : depense list -> personne -> float
 
-val solde_personne : depense list -> personne -> float
+val solde_personne : depense list -> personne -> 'a list -> float
 
 val calcul_dettes : personne list -> dette list
 
@@ -37,3 +38,5 @@ val flow_remboursement : personne list -> depense list -> float graph
 val from_file_personnes : string -> personne list
 
 val from_file_depenses : string -> depense list
+
+val export_money : path -> string graph -> personne list -> unit

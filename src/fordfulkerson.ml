@@ -1,9 +1,10 @@
 open Graph
 open Tools
 
+(*Setting flow at 0 and transforming a id graph to a flow graph*)
 let init_graphf gr = gmap gr (fun label -> {acu = 0; capa = label})
 
-
+(*Allows to find paths and so giving back an arc list to use for our FF algo*)
 let find_path graphf src dst = 
   let rec parcourir graphf src dst marked stock= 
     if src = dst then stock 
@@ -36,8 +37,10 @@ let print_path path =
 (*unused*)
 let diff_graph gr = gmap gr (fun label -> {acu = label.capa - label.acu; capa = label.capa})
 
+(*Solution found to transform a flow type (acu=int, capa=int) to a string*)
 let string_of_flow flow = "" ^ string_of_int flow.acu ^ "/" ^ string_of_int flow.capa ^ ""
 
+(*Sub function for our FF function which update the flow of a path (arc list)*)
 let rec update_flow graphf path acuflow = 
   match path with
   |[] -> graphf
@@ -45,7 +48,7 @@ let rec update_flow graphf path acuflow =
     let new_graphf = add_arc graphf x.src x.tgt {acu= acuflow; capa=x.lbl.capa} in
     update_flow new_graphf t acuflow
 
-
+(*Again a sub function which find the minimum flow of a path because it obviously must be the min flow to be the flow of the arc list*)
 let rec flow_min path = 
   match path with
   |[] -> max_int
@@ -53,7 +56,7 @@ let rec flow_min path =
     if x.lbl.capa - x.lbl.acu < flow_min t then x.lbl.capa - x.lbl.acu
     else flow_min t
   
-
+(*The FF function itself*)
   let ford_fulkerson graph src dst = 
     let graphf = init_graphf graph in
     let rec aux graphf src dst = 
@@ -67,7 +70,7 @@ let rec flow_min path =
 
 
 
-(*Passage en float*)
+(*All the same but we use float instead of int*)
 
 let init_graphf_f gr = gmap gr (fun label -> {acuf = 0.0; capaf = label})
 

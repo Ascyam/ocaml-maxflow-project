@@ -1,5 +1,7 @@
 open Graph
+open Printf
 
+(*I first defined 3 types so that I can stock infos from the file in these types and keep them linked*)
 type personne = {
   id : int;
   nom : string;
@@ -9,19 +11,23 @@ type personne = {
 type depense = {
   personne : int;
   prix : float;
-  (*participants : personne list;*)
+  (*participants : personne list;*) (*This is a way of upgrading this version but it seems to be a bit harder but possible assuming that we change the syntax of the 
+     money sharing file and we adapt the from_file_depense function to finally integrate this list in the moyenne_depense and all the others functions using moyenne_depense*)
 }
 
+(*The prequel of an arc*)
 type dette = {
   creancier : personne;
   debiteur : personne;
   montant : float;
 }
 
+(*The two following functions do not need explanation I guess...*)
 let new_personne personnes id nom solde = {id=id;nom=nom;solde=solde}::personnes
 
 let new_depense depenses payeur prix = {personne=payeur;prix=prix}::depenses
 
+(*read_personne and read_depense allows me to get the informations from the file by unsing scanf*)
 let read_personne personnes line =
   Printf.printf "personne: %s\n%!" line ;
   try Scanf.sscanf line "p %d %s %f" (fun id nom solde -> new_personne personnes id nom solde)
@@ -37,12 +43,14 @@ let read_depense depenses line =
     Printf.printf "Cannot read depense in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
 
+(*This function is used to ignore the comments in the file*)
 let read_comment graph line =
   try Scanf.sscanf line " %%" graph
   with _ ->
     Printf.printf "Unknown line:\n%s\n%!" line ;
     failwith "from_file"
 
+(*I seperated the from_file function in two because i think it is easier to get the infos using this method*)
 let from_file_personnes path =
 
   let infile = open_in path in
@@ -105,14 +113,17 @@ let from_file_depenses path =
   final_depenses
 
 
-let moyenne_depense depense = depense.prix /. float_of_int(5) 
+(*Doing the average of an expense*)
+let moyenne_depense depense personnes= depense.prix /. float_of_int(List.length personnes)
 
-let moyenne_depenses depenses personne = 
+(*Using the previous average to calculate the average of each persons for all expenses*)
+let moyenne_depenses depenses personne personnes= 
   let rec aux depenses personne acc = match depenses with
     | [] -> acc
-    | depense::t -> aux t personne (acc +. moyenne_depense depense)
+    | depense::t -> aux t personne (acc +. moyenne_depense depense personnes)
   in aux depenses personne 0.0
 
+(*Adding the exepenses of a personne if he payed it*)
 let ajout_paiement depenses personne = 
   let rec aux depenses personne acc = match depenses with
     | [] -> acc
@@ -120,8 +131,10 @@ let ajout_paiement depenses personne =
     else aux t personne acc
   in aux depenses personne 0.0
 
-let solde_personne depenses personne = ajout_paiement depenses personne -. moyenne_depenses depenses personne
+(*Calculating the "solde" of a personne (will be used to create capacity of the source and sink arcs)*)
+let solde_personne depenses personne personnes= ajout_paiement depenses personne -. moyenne_depenses depenses personne personnes
 
+(*Creating a dette list which is quite the same as an arc list*)
 let calcul_dettes personnes  = 
   let rec aux personnes acc = match personnes with
     | [] -> acc
@@ -134,53 +147,45 @@ let calcul_dettes personnes  =
     in aux t (aux2 personne personnes acc)
   in aux personnes []
 
+(*Just a function because I found that some of my dettes are replicating (idk why)*)
 let doublons dettes = 
   let rec aux dettes acc = match dettes with
     | [] -> acc
     | dette::t -> if List.mem dette acc then aux t acc else aux t (dette::acc)
   in aux dettes []
 
+(*Creating the dettes list with all the interactions possible between the persons*)
 let final_calcul_dettes personnes = doublons(calcul_dettes personnes@calcul_dettes (List.rev(personnes)))
 
-(*probablement inutile*)
-(*let rec dettes_to_float_arc_list dettes = match dettes with
-  | [] -> []
-  | dette::t -> {src=dette.creancier.id;tgt=dette.debiteur.id;lbl=dette.montant}::dettes_to_float_arc_list t*)
-
-
-(*let create_graph dettes personnes graph =
-  let rec create_nodes personnes graph = match personnes with
-    | [] -> empty_graph
-    | personne::t -> create_nodes t (new_node graph personne.id)
-  in let rec create_arcs depenses graph = match depenses with
-    | [] -> graph
-    | dette::t -> create_arcs t (new_arc graph {src= dette.creancier.id;  tgt= dette.debiteur.id; lbl=dette.montant})
-  in create_arcs dettes (create_nodes personnes graph)*)
-
+(*Linking the id of a personne with his node in the graph and so creating the node*)
 let rec create_nodes personnes graph = 
   Printf.printf "creating_node\n%!" ;
   match personnes with
     | [] -> graph
     | personne::t -> create_nodes t (new_node graph personne.id)
 
+(*Creating the arcs in the graph using the dettes list*)
 let rec create_arcs dettes graph = 
   Printf.printf "creating_arc\n%!" ;
   match dettes with
     | [] -> graph
     | dette::t -> create_arcs t (new_arc graph {src= dette.creancier.id;  tgt= dette.debiteur.id; lbl=dette.montant})
 
+(*Final function to create the graph using create_arcs and create_nodes*)
 let create_graph dettes personnes graph = 
-  Printf.printf "creating_graph\n%!" ;
   let graph = create_nodes personnes graph in
-  Printf.printf "graph: %s\n%!" ("Fin création noeuds");
   create_arcs dettes graph
 
+(*I think the name explains it all but just to precise that I used a second list of personnes just to keep it complete for the list.lengh of moyenne_depense*)
 let update_solde personnes depenses = 
+  let personnes2 = personnes in
   let rec aux personnes acc = match personnes with
     | [] -> acc
-    | personne::t -> aux t ({id=personne.id;nom=personne.nom;solde=solde_personne depenses personne}::acc)
+    | personne::t -> aux t ({id=personne.id;nom=personne.nom;solde=solde_personne depenses personne personnes2}::acc)
   in aux personnes []
 
+(*It creates the source and the sink and more importantly it links the source with the persons with debts and links the sink with the persons without debts
+   so the source node and the sink node will have the capacities of the people's "soldes"*)
 let dette_node_and_creance_node graph personnes depenses=
   let graph = new_node graph 0 in
   let graph = new_node graph 99 in
@@ -191,31 +196,37 @@ let dette_node_and_creance_node graph personnes depenses=
     else aux (new_arc graph {src=personne.id;tgt=99;lbl=personne.solde}) t
   in aux graph personnes
 
+(*Final function which use all the sub functions defined previously and then gives us the float graph we want to have for FF function*)
 let flow_remboursement personnes depenses =
-  Printf.printf "personnes: %s\n%!" (List.fold_left (fun acc personne -> acc ^ " " ^ personne.nom) "" personnes) ;
-  Printf.printf "depenses: %s\n%!" (List.fold_left (fun acc depense -> acc ^ " " ^ string_of_float depense.prix) "" depenses) ;
+  let personnes2 = personnes in
   let rec soldes_personnes personnes depenses = 
     match personnes with
     | [] -> []
-    | personne::t -> {id=personne.id;nom=personne.nom;solde=solde_personne depenses personne}::soldes_personnes t depenses
+    | personne::t -> {id=personne.id;nom=personne.nom;solde=solde_personne depenses personne personnes2}::soldes_personnes t depenses
   in let personnes = soldes_personnes personnes depenses in
   let dettes= final_calcul_dettes personnes in
   let graph = create_graph dettes personnes empty_graph in
-  Printf.printf "graph: %s\n%!" ("Fin fr") ;
   dette_node_and_creance_node graph personnes depenses
 
+(*After having all these functions, I wasn't satisfied with the print of our graph so I decided to modify the export function.
+   The conversion function just associate the id of a person with the id of his node in the graph*)
+let rec conversion id personnes = match personnes with
+  | [] -> failwith "No one"
+  | personne::t -> if personne.id=id then personne.nom else conversion id t
 
-(*let alan = {id=1;nom="Alan";solde=0.0}
-let ben = {id=2;nom="Ben";solde=0.0}
-let camille = {id=3;nom="Camille";solde=0.0}
-let alan2 = {id=4;nom="Alan2";solde=0.0}
-let ben2 = {id=5;nom="Ben2";solde=0.0}
+(*Using some if to know if it's the source (0) or the sink (99) I have adapted the export version putting my conversion function in so that I can have name on nodes*)
+let export_money path graph personnes=
 
-let depense1 = {personne=1;prix=10.0}
-let depense2 = {personne=2;prix=20.0}
-let depense3 = {personne=3;prix=30.0}
+  let ff = open_out path in
 
-let liste_depenses = [depense1;depense2;depense3]
-let liste_personnes = [alan;ben;camille;alan2;ben2]
-
-let liste_dettes = calcul_dettes liste_personnes*)
+  fprintf ff "digraph finite_state_machine {\n" ;
+  fprintf ff "rankdir=LR;\n" ;
+  fprintf ff "size=\"8,5\"\n" ;
+  fprintf ff "node [shape = circle]; " ;
+  n_iter_sorted graph (fun id -> if id=0 || id=99 then (if id=0 then fprintf ff "Dettes " else fprintf ff "Surplus ") else fprintf ff "%s " (conversion id personnes)) ;
+  fprintf ff ";\n" ;
+  e_iter graph (fun arc -> if arc.src=0 || arc.tgt=99 then (if arc.src=0 then fprintf ff "Dettes -> %s [ label = \"%s\" ];\n" (conversion arc.tgt personnes) arc.lbl else fprintf ff "%s -> Surplus [ label = \"%s\" ];\n" (conversion arc.src personnes) arc.lbl) else fprintf ff "%s -> %s [ label = \"%s\" ];\n" (conversion arc.src personnes) (conversion arc.tgt personnes) arc.lbl) ;
+  fprintf ff "}\n" ;
+  
+  close_out ff ;
+  ()

@@ -1,4 +1,3 @@
-open Gfile
 open Tools
 open Fordfulkerson
 open Moneysharing
@@ -27,14 +26,14 @@ let () =
   and _sink = int_of_string Sys.argv.(3)
   in
 
-
+  (*We get the personnes, the depenses and we use all the functions we created or modified to print the graph*)
   let personnes = from_file_personnes infile in
   let depenses = from_file_depenses infile in
   let graph_f = flow_remboursement personnes depenses in
   let graph_f = ford_fulkerson_f graph_f _source _sink in
   let graph_f = gmap graph_f (fun x -> string_of_flow_f x) in
 
-  let () = export outfile graph_f in
+  let () = export_money outfile graph_f (from_file_personnes infile)in
 
   ()
 

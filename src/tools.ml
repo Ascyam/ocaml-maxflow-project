@@ -1,6 +1,7 @@
 (* Yes, we have to repeat open Graph. *)
 open Graph
 
+(*Allows us to have a flow/capa graph*)
 type flow =
   {
     acu: int;
@@ -15,6 +16,7 @@ let add_arc gr s d l= match find_arc gr s d with
   |Some x-> new_arc gr {src= s; tgt = d; lbl= {acu = (x.lbl.acu + l.acu); capa = x.lbl.capa}}
 
 
+(*For float part*)
 type flow_f =
   {
     acuf: float;

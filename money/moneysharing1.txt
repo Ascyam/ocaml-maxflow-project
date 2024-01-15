@@ -3,13 +3,14 @@
 p 1 Alan 0.0
 p 2 Imad 0.0
 p 3 Hazem 0.0
-p 4 Mongi 0.0
-p 5 Ben 0.0
+p 4 Ben 0.0
 
 d 1 44.0 
-d 2 20.0 
-d 5 20.0 
+d 2 25.0
+d 4 20.0 
+d 4 14.5
 
-% Dans cet exemple, Alan Imad Hazem Mongi et Ben ont effectués 3 dépenses qui
-% concernaient tout le monde et qui ont été payés par Alan, Imad et Ben.
+% In this exemple, there's 4 persons Alan Imad Hazem and Ben with a start of 0.0 euros payed and 4 expenses payed by Alan Imad Ben and Ben again.
+% These expense are concerning everyone in the group as doing a list of concerning people was a bit complicated.
+% WARNING: Never use 0 and 99 as an id as they are used for Source and Sink
 % End of moneysharing
