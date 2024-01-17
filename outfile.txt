@@ -1,7 +1,7 @@
 digraph finite_state_machine {
 rankdir=LR;
 size="8,5"
-node [shape = circle]; Dettes [shape = doublecircle, style=filled, fillcolor=red]
+node [shape = oval]; Dettes [shape = doublecircle, style=filled, fillcolor=red]
 Surplus [shape = doublecircle, style=filled, fillcolor=green]
 Dettes Alan Imad Hazem Ben Surplus ;
 Imad -> Alan [ label = "0./∞" ];
@@ -10,14 +10,14 @@ Imad -> Hazem [ label = "0.875/∞" ];
 Alan -> Ben [ label = "0./∞" ];
 Alan -> Hazem [ label = "0./∞" ];
 Alan -> Imad [ label = "0./∞" ];
-Alan -> Surplus [ label = "18.125/18.125" ];
-Dettes -> Imad [ label = "0.875/0.875" ];
-Dettes -> Hazem [ label = "25.875/25.875" ];
+Alan -> Surplus [ label = "18.125/18.125", color=green ];
+Dettes -> Imad [ label = "0.875/0.875", color=red ];
+Dettes -> Hazem [ label = "25.875/25.875", color=red ];
 Hazem -> Alan [ label = "0./∞" ];
 Hazem -> Imad [ label = "0./∞" ];
 Hazem -> Ben [ label = "26.75/∞" ];
 Ben -> Imad [ label = "0./∞" ];
 Ben -> Hazem [ label = "0./∞" ];
 Ben -> Alan [ label = "18.125/∞" ];
-Ben -> Surplus [ label = "8.625/8.625" ];
+Ben -> Surplus [ label = "8.625/8.625", color=green ];
 }
