@@ -33,7 +33,7 @@ let () =
   let graph_f = ford_fulkerson_f graph_f _source _sink in
   let graph_f = gmap graph_f (fun x -> string_of_flow_f x) in
 
-  let () = export_money outfile graph_f (from_file_personnes infile)in
+  let () = export_money outfile graph_f personnes in
 
   ()
 
